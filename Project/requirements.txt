@@ -1,0 +1,16 @@
+# Core Dependencies
+pdfplumber==0.11.6         # PDF text extraction
+langchain==0.3.23          # LLM orchestration and prompt management
+openai==1.74.0             # OpenAI API client
+streamlit==1.44.0          # Web-based UI framework
+tiktoken==0.9.0            # Token management for OpenAI models
+
+# Optional NLP Tools
+nltk==3.9.1                # Natural Language Toolkit for text processing
+
+# Optional Vector Databases for Retrieval-Augmented Generation (RAG)
+pinecone==5.1.0            # Pinecone vector database client
+faiss-cpu==1.10.0          # Facebook AI Similarity Search (CPU version)
+
+# Alternative PDF Processing Library
+PyMuPDF==1.25.5            # High-performance PDF processing
