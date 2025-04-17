@@ -21,4 +21,4 @@ Second Commit - Project Prototype Setup (Mohammad El-Chami)
         
     Created the `extractor/` file to handle simple PDF parsing
     
-    Defined task responsibilities for the rest of the team based on core architecture
+    Defined task responsibilities for the rest of the team
