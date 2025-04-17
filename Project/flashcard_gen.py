@@ -1,0 +1,1 @@
+#build a function that takes a text chunk and returns 2-3 flashcard using openAI
