@@ -22,3 +22,10 @@ Second Commit - Project Prototype Setup (Mohammad El-Chami)
     Created the `extractor/` file to handle simple PDF parsing
     
     Defined task responsibilities for the rest of the team
+Third commit- PDF extractor file modification (ali ramadan)
+   initial changes to the code, just fixing up what me and the team talked about. 
+   i modified the pdf extractor pyhton file to improve the current code. 
+
+Fourth commit- PDF extractor file second modification (ali ramadan)
+    Finishing what me and my team discussed about cleaning up the pdf file extraction and adding some extra features.
+    
