@@ -4,6 +4,8 @@ import streamlit as st
 from pdf_extractor import extract_text_from_pdf
 from flashcard_gen import generate_flashcards_from_text
 import random
+import pandas as pd
+import io
 
 st.set_page_config(page_title="AI Flashcard Generator", page_icon="🧠")
 st.title("🧠 AI Flashcard Generator")
@@ -63,6 +65,15 @@ if uploaded_file:
                 flat_flashcards.extend(cards)
             st.session_state.flashcards = flat_flashcards
             st.session_state.index = 0
+
+            #Exporting generated flashcards into csv file for download
+            export = pd.DataFrame(st.session_state.flashcards)
+            buffer = io.StringIO()
+            export.to_csv(buffer, index = False)
+            csv_data = buffer.getvalue()
+
+            st.download_button(label="📥 Download Flashcards as CSV", data=csv_data,
+                               file_name="flashcards.csv", mime="text/csv")
 
 #functions to be executed when clicked on respective button
 def next_card():

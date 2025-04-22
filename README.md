@@ -61,3 +61,7 @@ Ninth commit (Ghina Albabbili)-
     Allows for user answer input to be checked against correct answer
     Progress view and reset button
     Creating toggle menu between review mode and test mode- ux update
+
+Tenth commit (Ghina Albabbili)-
+-Changes made to app.py
+    Download button feature for generated flashcards; takes the question, answer pairing, uses pandas library. Exported and downloaded as a csv file.
