@@ -257,7 +257,7 @@ if st.session_state.flashcards:
             st.markdown(st.session_state.mc_result)
 
         # Progress
-        st.write(f"({st.session_state.index + 1} / {len(st.session_state.flashcards)})")
+        st.write(f"({st.session_state.index + 1} / {len(st.session_state.flashcards)+1} )")
         st.write(f"Correct answers: {st.session_state.number_correct_mc}")
         total = st.session_state.index + 1 if st.session_state.index + 1 <= len(st.session_state.flashcards) else len(
             st.session_state.flashcards)
