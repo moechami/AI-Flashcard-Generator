@@ -42,3 +42,15 @@ Built the core AI flashcard generation logic using OpenAI + LangChain:
 
 sixth commit- app.py changes (ali ramadan)
     I made changes to the app.py file to format everything better for streamlit, this way it can look more professional and works better with everything else.
+
+Seventh commit (made before sixth commit):
+Created flashcard_display.py in order to display the flashcards in a window using the tkinter library. Implementation is in progress, sample buttons, text, and user input boxes provide framework for later changes. TODO-create separate pages
+
+Eighth commit-
+-Deletes: flashcard_display.py
+    Tkinter library not necessary, everything done in streamlit
+-Changes made to app.py
+    Define session state for card in order to flip between question and answer side, go to previous card, go to next card
+    Define functions for what to do on clicks of buttons: next_card(), flip_card(), previous_card() 
+    Change flashcards to a flat list to traverse by their question, answer values
+    Create flashcard review with above features
