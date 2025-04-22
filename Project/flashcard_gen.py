@@ -22,7 +22,7 @@ prompt = ChatPromptTemplate.from_messages([
 
 Return ONLY a valid JSON array that starts with [ and ends with ].
 Each item must be a dictionary with 'question' and 'answer' keys.
-Do NOT return markdown, comments, or any explanation.""")
+Do NOT return markdown, comments, or any explanation. Prioritize Key definitions, processes, and relationships.""")
 
 ])
 
@@ -59,13 +59,3 @@ def generate_flashcards_from_text(chunk: str, num_cards: int = 3) -> List[Dict[s
     except Exception as e:
         print(f"[Error] Flashcard generation failed: {e}")
         return []
-
-# Example usage for local testing
-if __name__ == "__main__":
-    test_text = (
-        "Photosynthesis is the process by which green plants and some other organisms "
-        "use sunlight to synthesize foods from carbon dioxide and water."
-    )
-    cards = generate_flashcards_from_text(test_text, num_cards=2)
-    for card in cards:
-        print(f"Q: {card['question']}\nA: {card['answer']}\n")
