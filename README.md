@@ -65,3 +65,7 @@ Ninth commit (Ghina Albabbili)-
 Tenth commit (Ghina Albabbili)-
 -Changes made to app.py
     Download button feature for generated flashcards; takes the question, answer pairing, uses pandas library. Exported and downloaded as a csv file.
+
+Eleventh commit (Ghina Albabbili)-
+-Changes made to app.py
+    Multiple choice feature, with next and reset progress. Keeps track of score

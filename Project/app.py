@@ -1,6 +1,8 @@
 # app.py
 
 import streamlit as st
+
+
 from pdf_extractor import extract_text_from_pdf
 from flashcard_gen import generate_flashcards_from_text
 import random
@@ -32,6 +34,14 @@ if "number_correct" not in st.session_state:    #number of correct cards answere
     st.session_state.number_correct = 0
 if "answered" not in st.session_state:      #keeps track of whether the card in test mode has already been answered
     st.session_state.answered = False
+if "number_correct_mc" not in st.session_state:
+    st.session_state.number_correct_mc = 0
+if "mc_result" not in st.session_state:
+    st.session_state.mc_result = ""
+if "mc_choices" not in st.session_state:
+    st.session_state.mc_choices = {}
+if "answered_mc" not in st.session_state:
+    st.session_state.answered_mc = False
 
 if uploaded_file:
     with st.spinner("🔍 Extracting and cleaning text from PDF..."):
@@ -75,7 +85,7 @@ if uploaded_file:
             st.download_button(label="📥 Download Flashcards as CSV", data=csv_data,
                                file_name="flashcards.csv", mime="text/csv")
 
-#functions to be executed when clicked on respective button
+#function for going to next card
 def next_card():
     if st.session_state.index < len(st.session_state.flashcards) - 1:
         st.session_state.index += 1
@@ -83,10 +93,13 @@ def next_card():
         st.session_state.entered_answer = ""
         st.session_state.result = ""
         st.session_state.answered = False
-
+        st.session_state.user_select_mc = ''
+        st.session_state.mc_result = ""
+        st.session_state.answered_mc = False
+#function for flipping card between question and answer sides
 def flip_card():
     st.session_state.question_side = not st.session_state.question_side
-
+#function for going back to the previous card
 def previous_card():
     if st.session_state.index > 0:
         st.session_state.index -= 1
@@ -94,7 +107,10 @@ def previous_card():
         st.session_state.entered_answer = ""
         st.session_state.result = ""
         st.session_state.answered = False
-
+        st.session_state.user_select_mc = ''
+        st.session_state.mc_result = ""
+        st.session_state.answered_mc = False
+#function for shuffling flashcards randomly
 def shuffle_cards():
     random.shuffle(st.session_state.flashcards)
     st.session_state.index = 0
@@ -103,7 +119,12 @@ def shuffle_cards():
     st.session_state.entered_answer = ""
     st.session_state.result = ""
     st.session_state.answered = False
-
+    st.session_state.user_select_mc = ''
+    st.session_state.mc_result = ""
+    st.session_state.answered_mc = False
+    st.session_state.number_correct_mc = 0
+    st.session_state.mc_options_per_card = {}
+#function to see if answer entered by user is correct
 def check_entered_answer():
     if st.session_state.answered:
         return
@@ -119,15 +140,30 @@ def check_entered_answer():
         st.session_state.result = f"❌ Incorrect. The correct answer is: {correct_answer}"
 
     st.session_state.answered = True
-
+#function to start over in the test mode
 def reset_test():
     st.session_state.index = 0
     st.session_state.entered_answer = ""
     st.session_state.result = ""
     st.session_state.answered = False
     st.session_state.number_correct = 0
+def generate_mc_choices(correct_answer, flashcards):
+    # Collect all unique incorrect answers
+    incorrect = list({fc['answer'] for fc in flashcards if fc['answer'] != correct_answer})
+    # Choose 3 random wrong answers
+    wrong_choices = random.sample(incorrect, min(3, len(incorrect)))
+    choice = wrong_choices + [correct_answer]
+    random.shuffle(choice)
+    return choice
+def reset_mc_progress():
+    st.session_state.index = 0
+    st.session_state.number_correct_mc = 0
+    st.session_state.mc_result = ""
+    st.session_state.answered_mc = False
+    st.session_state.mc_choices = {}
 
-mode = st.radio("Choose a mode:", ["Review Mode", "Test Mode"], horizontal=True)
+#toggle menu and studying options
+mode = st.radio("Choose a mode:", ["Review Mode", "Test Mode", "Multiple Choice Mode"], horizontal=True)
 
 if st.session_state.flashcards:
     #Define current card as the first card
@@ -154,13 +190,11 @@ if st.session_state.flashcards:
             st.button("Next ➡️", on_click=next_card,
                   disabled=st.session_state.index == len(st.session_state.flashcards) - 1)
 
-
-
     elif mode == "Test Mode":
         #Testing knowledge mode
         st.markdown("🧠 Test Your Knowledge")
         st.write("Question:")
-        #Question is written, prompts user for their reponse
+        #Question is written, prompts user for their response
         st.info(curr_card['question'])
         st.text_input("Your Answer", key = "entered_answer")
         st.button("Check Answer", on_click=check_entered_answer)
@@ -185,3 +219,59 @@ if st.session_state.flashcards:
         st.caption(f'Score: {score}%')
         #reset in case user wants to start over
         st.button("🔄 Reset Test Progress", on_click=reset_test)
+
+    elif mode == "Multiple Choice Mode":
+        st.markdown("🧠 Multiple Choice Quiz")
+        st.write("Question:")
+        st.info(curr_card['question'])
+
+        # Generate or reuse choices
+        if st.session_state.index not in st.session_state.mc_choices:
+            st.session_state.mc_choices[st.session_state.index] = generate_mc_choices(
+                curr_card['answer'], st.session_state.flashcards
+            )
+
+        choices = st.session_state.mc_choices[st.session_state.index]
+
+        selected = st.radio(
+            "Choose the correct answer:",
+            choices,
+            key=f"mc_answer_{st.session_state.index}"
+        )
+
+        def check_mc():
+            if st.session_state.answered_mc:
+                return
+            if selected == curr_card['answer']:
+                st.session_state.mc_result = "✅ Correct!"
+                st.session_state.number_correct_mc += 1
+                st.session_state.answered_mc = True
+            else:
+                st.session_state.mc_result = f"❌ Incorrect. Correct: {curr_card['answer']}"
+                st.session_state.answered_mc = True
+
+
+        st.button("Check Answer", on_click=check_mc)
+
+        if st.session_state.mc_result:
+            st.markdown(st.session_state.mc_result)
+
+        # Progress
+        st.write(f"({st.session_state.index + 1} / {len(st.session_state.flashcards)})")
+        st.write(f"Correct answers: {st.session_state.number_correct_mc}")
+        total = st.session_state.index + 1 if st.session_state.index + 1 <= len(st.session_state.flashcards) else len(
+            st.session_state.flashcards)
+        score = int((st.session_state.number_correct_mc / total) * 100) if total > 0 else 0
+
+        st.caption(f"Score: {score}%")
+
+        # Navigation Buttons
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            st.button("🔄 Reset MC Progress", on_click=reset_mc_progress)
+
+        with col3:
+            st.button("Next ➡️", on_click=next_card,
+                      disabled=st.session_state.index == len(st.session_state.flashcards) - 1)
+
+
