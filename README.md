@@ -39,3 +39,6 @@ Built the core AI flashcard generation logic using OpenAI + LangChain:
     Integrated langchain-openai with prompt templates using ChatPromptTemplate
 
     Ensured consistent JSON output
+
+sixth commit- app.py changes (ali ramadan)
+    I made changes to the app.py file to format everything better for streamlit, this way it can look more professional and works better with everything else.
